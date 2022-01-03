@@ -4,7 +4,7 @@ $Subscription = Get-AzSubscription -SubscriptionName 'Visual Studio Enterprise'
 ForEach($file in $armTemplateFiles) {
 
         New-AzPolicyDefinition `
-        -Name (($armTemplateFiles.Name).Split(".")[0]) `
+        -Name (($file.Name).Split(".")[0]) `
         -Policy $file.FullName `
         -SubscriptionId $($Subscription.Id)
     }
