@@ -1,0 +1,30 @@
+{
+  "properties": {
+    "displayName": "App Service Deny HTTP",
+    "policyType": "Custom",
+    "mode": "All",
+    "description": "This policy will prevent setting the TLS version to disabled or anything older then 1.2",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "App Service"
+    },
+    "parameters": {},
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Web/sites/config"
+          },
+          {
+            "field": "Microsoft.Web/sites/config/minTlsVersion",
+            "notEquals": "1.2"
+          }
+        ]
+      },
+      "then": {
+        "effect": "deny"
+      }
+    }
+  }
+}
