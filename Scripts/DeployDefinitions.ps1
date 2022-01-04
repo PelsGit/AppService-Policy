@@ -1,6 +1,5 @@
 $PolicyTemplateFiles = Get-ChildItem -Path C:\Repos\appservice-policy\AppService-Policy\PolicyTemplates
 $Subscription = Get-AzSubscription -SubscriptionName 'Visual Studio Enterprise'
-Set-StrictMode -Off
 
 ForEach ($PolicyTemplateFiles in $PolicyTemplateFiles) {
     If ($PolicyTemplateFiles.FullName -Match 'remove-*') {
