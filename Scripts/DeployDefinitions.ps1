@@ -1,12 +1,17 @@
-$armTemplateFiles = Get-ChildItem -Path C:\Local\Repos\Appservice-Policy\AppService-Policy\PolicyTemplates
+$PolicyTemplateFiles = Get-ChildItem -Path C:\Repos\appservice-policy\AppService-Policy\PolicyTemplates
 $Subscription = Get-AzSubscription -SubscriptionName 'Visual Studio Enterprise'
+Set-StrictMode -Off
 
-ForEach($file in $armTemplateFiles) {
-
-        New-AzPolicyDefinition `
-        -Name (($file.Name).Split(".")[0]) `
-        -Policy $file.FullName `
-        -SubscriptionId $($Subscription.Id)
+ForEach ($PolicyTemplateFiles in $PolicyTemplateFiles) {
+    If ($PolicyTemplateFiles.FullName -Match 'remove-*') {
+        Remove-AzPolicyDefinition `
+            -Name (($PolicyTemplateFiles.Name.split("remove-")[1].Split(".")[0])) `
+            -Force
     }
-
-Get-Job | Receive-Job
+    else {
+        New-AzPolicyDefinition `
+            -Name (($PolicyTemplateFiles.Name).Split(".")[0]) `
+            -Policy $PolicyTemplateFiles.FullName `
+            -SubscriptionId $($Subscription.Id)
+    }
+}
