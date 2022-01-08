@@ -36,8 +36,9 @@ jobs:
         creds: ${{secrets.AZURE_CREDENTIALS}}
         enable-AzPSSession: true
     - name: Check if policy definitions need to be removed.
-      shell: pwsh
-      run: |
+      uses: Azure/powershell@v1
+      with: 
+        inlineScript: |
           .\Scripts\Remove-whatif.ps1
 
   #   - name: Install from PSGallery
