@@ -1,4 +1,4 @@
-$PolicyTemplateFiles = Get-ChildItem -Path PolicyTemplates
+$PolicyTemplateFiles = Get-ChildItem -Path PolicyTemplates\policydefinitions
 $Subscription = Get-AzSubscription -SubscriptionName 'Visual Studio Enterprise'
 
 ForEach ($PolicyTemplateFiles in $PolicyTemplateFiles) {
@@ -23,7 +23,7 @@ $Policyset = get-AzPolicySetDefinition -Name 'app-service-policy-set' -ErrorVari
 if ($notPresent) {
     $newPolicySetDefinition = New-AzPolicySetDefinition `
         -Name 'app-service-policy-set' `
-        -PolicyDefinition "policyset\policyset.json"
+        -PolicyDefinition "PolicyTemplates\policyset\policyset.json"
 
     New-AzPolicyAssignment `
         -Name 'AppServicePolicyAssignment' `
@@ -35,6 +35,6 @@ if ($notPresent) {
     else {
         set-AzPolicySetDefinition `
             -Name $Policyset.Name `
-            -PolicyDefinition "policyset\policyset.json"
+            -PolicyDefinition "PolicyTemplates\policyset\policyset.json"
     }
 }

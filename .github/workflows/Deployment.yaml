@@ -13,9 +13,6 @@ jobs:
 
     - name: Upload Template Artifacts
       uses: actions/upload-artifact@v2.2.4
-      with:
-        name: policy-templates
-        path: PolicyTemplates
 
   # Test-Deployment:
   #   runs-on: ubuntu-latest
