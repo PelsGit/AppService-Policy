@@ -39,11 +39,11 @@ jobs:
       with:
         creds: ${{secrets.AZURE_CREDENTIALS}}
         enable-AzPSSession: true
-    - name: Check if policy definitions need to be removed.
+    - name: Check Policy Deployments
       uses: Azure/powershell@v1
       with: 
         inlineScript: |
-          .\Scripts\Remove-whatif.ps1
+          .\Scripts\CheckPolicies.ps1
         azPSVersion: latest
     - name: Test web app deployment
       uses: Azure/powershell@v1
@@ -53,49 +53,48 @@ jobs:
           New-AzResourceGroupDeployment -ResourceGroupName ${{ env.resourceGroupName }} -TemplateFile ${{ env.appserviceTemplate }} -WhatIf
         azPSVersion: latest
 
-  # Deploy-Template:
-  #   runs-on: ubuntu-latest
-  #   needs: Test-Deployment
-  #   steps:
-  #   - name: Checkout
-  #     uses: actions/checkout@v2.3.4
+  Deploy-Policies:
+    runs-on: ubuntu-latest
+    needs: Test-Deployments
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2.3.4
+    - name: Download Artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: build-artifacts
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZURE_CREDENTIALS}}
+        enable-AzPSSession: true
+    - name: Run Deploy Policies
+      uses: Azure/powershell@v1
+      with: 
+        inlineScript: |
+          .\Scripts\DeployPolicies.ps1
+        azPSVersion: latest
 
-  #   - name: Login to Azure
-  #     uses: azure/login@v1
-  #     with:
-  #       creds: ${{secrets.AZURE_CREDENTIALS}}
-  #       enable-AzPSSession: true
-
-  #   - name: Deploy bicep to Azure
-  #     uses: Azure/cli@1.0.4
-  #     with:
-  #       inlineScript: |
-  #         az deployment group create \
-  #         --template-file ${{ env.bicepfilePath }} \
-  #         -g ${{ env.resourceGroupName }}
-  # Compliancy-Scan:
-  #   runs-on: ubuntu-latest
-  #   needs: Deploy-Template
-
-  #   steps:
-  #   - name: Login to Azure
-  #     uses: azure/login@v1
-  #     with:
-  #       creds: ${{secrets.AZURE_CREDENTIALS}}
-  #       enable-AzPSSession: true
-
-  #   - name: Wait for 15 minutes
-  #     uses: Azure/powershell@v1
-  #     with:
-  #       inlineScript: |
-  #         Write-Host "Going to sleep for 15 minutes"
-  #         Start-Sleep -s 900
-  #       azPSVersion: latest
-
-  #   - name: Run compliancy Scan
-  #     uses: Azure/powershell@v1
-  #     with:
-  #       inlineScript: |
-  #         Select-AzSubscription ${{secrets.AZURE_SUBSCRIPTIONID}}
-  #         Start-AzPolicyComplianceScan -ResourceGroupName ${{ env.resourceGroupName }}
-  #       azPSVersion: latest
+  Compliancy-Scan:
+    runs-on: ubuntu-latest
+    needs: Deploy-Policies
+    steps:
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZURE_CREDENTIALS}}
+        enable-AzPSSession: true
+    - name: Wait for 15 minutes
+      uses: Azure/powershell@v1
+      with:
+        inlineScript: |
+          Write-Host "Going to sleep for 15 minutes"
+          Start-Sleep -s 900
+        azPSVersion: latest
+    - name: Run compliancy Scan
+      uses: Azure/powershell@v1
+      with:
+        inlineScript: |
+          Select-AzSubscription ${{secrets.AZURE_SUBSCRIPTIONID}}
+          Start-AzPolicyComplianceScan -ResourceGroupName ${{ env.resourceGroupName }}
+        azPSVersion: latest
