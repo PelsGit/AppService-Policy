@@ -1,4 +1,5 @@
 $PolicyTemplateFiles = Get-ChildItem -Path PolicyTemplates\policydefinitions
+import-module az
 
 ForEach ($PolicyTemplateFiles in $PolicyTemplateFiles) {
     #Check if there is a file which needs to be removed
