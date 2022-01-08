@@ -1,0 +1,8 @@
+[
+  {
+    "policyDefinitionId": "/subscriptions/fffb0c65-e90a-4b5d-adac-a5d6d399e2cc/providers/Microsoft.Authorization/policyDefinitions/appservice-ftp-deny"
+  },
+  {
+    "policyDefinitionId": "/subscriptions/fffb0c65-e90a-4b5d-adac-a5d6d399e2cc/providers/Microsoft.Authorization/policyDefinitions/appservice-tls-deny"
+  }
+]
