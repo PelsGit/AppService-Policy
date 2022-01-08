@@ -1,8 +1,8 @@
 on: push
 
-# env:
-#   resourceGroupName: Dev-Pels-01
-#   bicepfilePath: main.bicep
+env:
+  resourceGroupName: Rutger-RG
+  appserviceTemplate: Templates/AppService.json
 
 jobs:
   Build-Artifacts:
@@ -14,7 +14,7 @@ jobs:
       uses: Azure/cli@1.0.4
       with:
         inlineScript: |
-          az bicep build --file Templates/AppService.bicep --outfile Templates/AppService.json
+          az bicep build --file Templates/AppService.bicep --outfile ${{ env.appserviceTemplate }}
     - name: Upload Template Artifacts
       uses: actions/upload-artifact@v2.2.4
       with:
@@ -45,35 +45,13 @@ jobs:
         inlineScript: |
           .\Scripts\Remove-whatif.ps1
         azPSVersion: latest
-
-  #   - name: Install from PSGallery
-  #     shell: pwsh
-  #     run: |
-  #       Set-PSRepository PSGallery -InstallationPolicy Trusted
-  #   - name: Login to Azure
-  #     uses: azure/login@v1
-  #     with:
-  #       creds: ${{secrets.AZURE_CREDENTIALS}}
-  #       enable-AzPSSession: true
-
-  #   - name: build Bicep file
-  #     uses: Azure/cli@1.0.4
-  #     with:
-  #       inlineScript: |
-  #         az bicep build --file ${{ env.bicepfilePath }} --outfile ./main.json
-  #   - name: Upload a Build Artifact
-  #     uses: actions/upload-artifact@v2.2.4
-  #     with:
-  #       path: ./main.json 
-
-  #   - name: Create Resource Group
-  #     uses: Azure/powershell@v1
-  #     with:
-  #       inlineScript: |
-  #         Select-AzSubscription ${{secrets.AZURE_SUBSCRIPTIONID}}
-  #         New-AzResourceGroup -Name ${{ env.resourceGroupName }} -Location "West Europe" -Force
-  #         New-AzResourceGroupDeployment -ResourceGroupName ${{ env.resourceGroupName }} -TemplateFile ./main.json -WhatIf
-  #       azPSVersion: latest
+    - name: Test web app deployment
+      uses: Azure/powershell@v1
+      with:
+        inlineScript: |
+          Select-AzSubscription ${{secrets.AZURE_SUBSCRIPTIONID}}
+          New-AzResourceGroupDeployment -ResourceGroupName ${{ env.resourceGroupName }} -TemplateFile ${{ env.appserviceTemplate }} -WhatIf
+        azPSVersion: latest
 
   # Deploy-Template:
   #   runs-on: ubuntu-latest
