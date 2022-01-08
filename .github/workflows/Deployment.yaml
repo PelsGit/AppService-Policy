@@ -11,7 +11,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2.3.4
 
-    - name: Upload a Build Artifact
+    - name: Upload Template Artifacts
       uses: actions/upload-artifact@v2.2.4
       with:
         name: policy-templates
