@@ -40,6 +40,7 @@ jobs:
       with: 
         inlineScript: |
           .\Scripts\Remove-whatif.ps1
+        azPSVersion: latest
 
   #   - name: Install from PSGallery
   #     shell: pwsh
