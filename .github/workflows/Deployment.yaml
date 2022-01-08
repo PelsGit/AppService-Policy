@@ -5,6 +5,7 @@ on:
 # env:
 #   resourceGroupName: Dev-Pels-01
 #   bicepfilePath: main.bicep
+# need for commit
 
 jobs:
   Build-Artifacts:
