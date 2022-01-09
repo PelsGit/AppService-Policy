@@ -12,7 +12,7 @@ $jsonFile | ConvertTo-Json -Depth 4 | Out-File $path
 
 ## this belongs to part 2 ##
 
-$jsonFile = 'policyset\policyset.json'
+$jsonFile = 'PolicyTemplates\policyset\policyset.json'
 $jsonBase = Get-Content -RAW $jsonfile | Out-String | ConvertFrom-Json
 $jsonBase.resources.properties.policyDefinitions | Add-Member -Type NoteProperty -Name 'policyDefinitionId' -Value '/subscriptions/fffb0c65-e90a-4b5d-adac-a5d6d399e2cc/providers/Microsoft.Authorization/policyDefinitions/appservice-ftp-deny' -PassThru
 $jsonBase | ConvertTo-Json -Depth 3 | Out-File $jsonFile
