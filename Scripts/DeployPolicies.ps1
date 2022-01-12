@@ -1,3 +1,16 @@
+<# 
+Version: 0.1
+
+.SYNOPSIS
+Deploy Azure Policy defintion to Azure, Assign a Policy Set to a scope and check if old policy definitions need to be removed.
+
+.DESCRIPTION
+To run this script you need owner permissions on the scope where you want to assign the policy definitions and sets
+This policy will iterate through the PolicyDefinitions folder, remove definitions that need to be removed and assign new policies to the correct scope.
+If the policyset already exist, it will perform an update to the policy set.
+
+#>
+
 $PolicyTemplateFiles = Get-ChildItem -Path PolicyTemplates\policydefinitions
 $Subscription = Get-AzSubscription -SubscriptionName 'Visual Studio Enterprise'
 

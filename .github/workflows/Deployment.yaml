@@ -55,6 +55,7 @@ jobs:
 
   Deploy-Policies:
     runs-on: ubuntu-latest
+    environment: Deployment
     needs: Test-Deployments
     steps:
     - name: Checkout
@@ -75,8 +76,34 @@ jobs:
           .\Scripts\DeployPolicies.ps1
         azPSVersion: latest
 
+#created an approval gate for this step. Just in case you do not want to redeploy an App Service.
+  Deploy-Appservice:
+    runs-on: ubuntu-latest
+    environment: Deployment
+    needs: Deploy-Policies
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2.3.4
+    - name: Download Artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: build-artifacts
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZURE_CREDENTIALS}}
+        enable-AzPSSession: true
+    - name: Deploy app service
+      uses: Azure/powershell@v1
+      with: 
+        inlineScript: |
+          Select-AzSubscription ${{secrets.AZURE_SUBSCRIPTIONID}}
+          New-AzResourceGroupDeployment -ResourceGroupName ${{ env.resourceGroupName }} -TemplateFile ${{ env.appserviceTemplate }}
+        azPSVersion: latest
+
   Compliancy-Scan:
     runs-on: ubuntu-latest
+    if: always()
     needs: Deploy-Policies
     steps:
     - name: Login to Azure
