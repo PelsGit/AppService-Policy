@@ -104,7 +104,7 @@ jobs:
   Compliancy-Scan:
     runs-on: ubuntu-latest
     if: always()
-    needs: Deploy-Policies
+    needs: Deploy-Appservice
     steps:
     - name: Login to Azure
       uses: azure/login@v1
