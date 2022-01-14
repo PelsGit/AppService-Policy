@@ -1,0 +1,21 @@
+"ipSecurityRestrictions": [
+      {
+        "ipAddress": "81.205.246.191/32",
+        "action": "Allow",
+        "tag": "Default",
+        "priority": 10,
+        "name": "rule1"
+      },
+
+Microsoft.Web/sites/config/ipSecurityRestrictions
+Microsoft.Web/sites/config/web.ipSecurityRestrictions
+Microsoft.Web/sites/config/web.ipSecurityRestrictions[*]
+Microsoft.Web/sites/config/ipSecurityRestrictions[*]
+
+Microsoft.Web/sites/config/ipSecurityRestrictions[*].ipAddress
+Microsoft.Web/sites/config/web.ipSecurityRestrictions[*].ipAddress
+
+ "vnetName": "4596ff46-2954-4c79-91ae-a3b67665ebeb_appservice",
+    "vnetRouteAllEnabled": true,
+    "vnetPrivatePortsCount": 0,
+Microsoft.Web/sites/config/vnetRouteAllEnabled
