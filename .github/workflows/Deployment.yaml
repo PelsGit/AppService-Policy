@@ -1,7 +1,7 @@
 on: push
 
 env:
-  resourceGroupName: Rutger-RG
+  resourceGroupName: rutgerpels-ishare-testenv-weu
   appserviceTemplate: Templates/AppService.json
 
 jobs:
@@ -73,7 +73,7 @@ jobs:
       uses: Azure/powershell@v1
       with: 
         inlineScript: |
-          .\Scripts\DeployPolicies.ps1 -SubscriptionName ${{secrets.SUBSCRIPTION_NAME}}
+          .\Scripts\DeployPolicies.ps1 -SubscriptionName ${{secrets.SUBSCRIPTION_NAME}} -ResourceGroupName ${{ env.resourceGroupName }}
         azPSVersion: latest
 
 #created an approval gate for this step. Just in case you do not want to redeploy an App Service.

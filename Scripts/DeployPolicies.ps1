@@ -12,12 +12,13 @@ If the policyset already exist, it will perform an update to the policy set.
 #>
 
 param (
-    $SubscriptionName
+    $SubscriptionName,
+    $ResourceGroupName
 )
 
 $PolicyTemplateFiles = Get-ChildItem -Path PolicyTemplates\policydefinitions
 $Subscription = Get-AzSubscription -SubscriptionName $SubscriptionName #use this for Subscription assignments
-$ResourceGroupName = Get-AzResourceGroup -Name 'rutgerpels-ishare-testenv-weu' #use this for ResourceGroup assignments
+$ResourceGroupNameAssignment = Get-AzResourceGroup -Name $ResourceGroupName #use this for ResourceGroup assignments
 
 ForEach ($PolicyTemplateFiles in $PolicyTemplateFiles) {
     #Check if there is a file which needs to be removed
@@ -46,7 +47,7 @@ if ($notPresent) {
     New-AzPolicyAssignment `
         -Name 'AppServicePolicyAssignment' `
         -PolicyDefinition $newPolicySetDefinition `
-        -Scope $ResourceGroupName.ResourceId `
+        -Scope $ResourceGroupNameAssignment.ResourceId `
         -AssignIdentity `
         -Location 'west europe'
 
