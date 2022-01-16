@@ -12,13 +12,13 @@ If the policyset already exist, it will perform an update to the policy set.
 #>
 
 param (
-    $SubscriptionName,
-    $ResourceGroupName
+    $SubscriptionName = 'ishare-playground',
+    $ResourceGroupName = 'rutgerpels-ishare-testenv-weu'
 )
 
 $PolicyTemplateFiles = Get-ChildItem -Path PolicyTemplates\policydefinitions
-$Subscription = Get-AzSubscription -SubscriptionName $SubscriptionName #use this for Subscription assignments
-$ResourceGroupNameAssignment = Get-AzResourceGroup -Name $ResourceGroupName #use this for ResourceGroup assignments
+$Subscription = Get-AzSubscription -SubscriptionName $SubscriptionName
+$ResourceGroupNameAssignment = Get-AzResourceGroup -Name $ResourceGroupName
 
 ForEach ($PolicyTemplateFiles in $PolicyTemplateFiles) {
     #Check if there is a file which needs to be removed
@@ -46,14 +46,17 @@ if ($notPresent) {
 
     New-AzPolicyAssignment `
         -Name 'AppServicePolicyAssignment' `
-        -PolicyDefinition $newPolicySetDefinition `
+        -PolicySetDefinition $newPolicySetDefinition `
         -Scope $ResourceGroupNameAssignment.ResourceId `
         -AssignIdentity `
         -Location 'west europe'
 
-    else {
-        set-AzPolicySetDefinition `
-            -Name $Policyset.Name `
-            -PolicyDefinition "PolicyTemplates\policyset\policyset.json"
-    }
+        write-verbose -Message "policyset does not exist, creaing new one and assigning to correct scope"
+}
+else {
+    set-AzPolicySetDefinition `
+        -Name $Policyset.Name `
+        -PolicyDefinition "PolicyTemplates\policyset\policyset.json"
+
+        write-verbose -Message "Policy Already exists, updating current one"
 }
