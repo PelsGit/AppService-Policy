@@ -34,7 +34,8 @@ ForEach ($PolicyTemplateFiles in $PolicyTemplateFiles) {
 }
 
 Write-host "$PolicyTemplateFilesName will be created or updated"
-if($PolicyTemplateFiles -eq $null) {
+
+if($PolicytobeDeleted -eq $null) {
 Write-host "No Policies will be deleted"
 }
 else {
