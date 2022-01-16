@@ -12,8 +12,8 @@ If the policyset already exist, it will perform an update to the policy set.
 #>
 
 param (
-    $SubscriptionName = 'ishare-playground',
-    $ResourceGroupName = 'rutgerpels-ishare-testenv-weu'
+    $SubscriptionName,
+    $ResourceGroupName
 )
 
 $PolicyTemplateFiles = Get-ChildItem -Path PolicyTemplates\policydefinitions
