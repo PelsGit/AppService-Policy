@@ -37,7 +37,7 @@ jobs:
     - name: Login to Azure
       uses: azure/login@v1
       with:
-        creds: ${{secrets.AZURE_CREDENTIALS}}
+        creds: ${{secrets.AZURE_CREDENTIALS2}}
         enable-AzPSSession: true
     - name: Check Policy Deployments
       uses: Azure/powershell@v1
@@ -49,7 +49,7 @@ jobs:
       uses: Azure/powershell@v1
       with:
         inlineScript: |
-          Select-AzSubscription ${{secrets.AZURE_SUBSCRIPTIONID}}
+          Select-AzSubscription ${{secrets.AZURE_SUBSCRIPTIONID2}}
           New-AzResourceGroupDeployment -ResourceGroupName ${{ env.resourceGroupName }} -TemplateFile ${{ env.appserviceTemplate }} -WhatIf
         azPSVersion: latest
 
@@ -67,13 +67,13 @@ jobs:
     - name: Login to Azure
       uses: azure/login@v1
       with:
-        creds: ${{secrets.AZURE_CREDENTIALS}}
+        creds: ${{secrets.AZURE_CREDENTIALS2}}
         enable-AzPSSession: true
     - name: Run Deploy Policies
       uses: Azure/powershell@v1
       with: 
         inlineScript: |
-          .\Scripts\DeployPolicies.ps1
+          .\Scripts\DeployPolicies.ps1 -SubscriptionName ${{secrets.SUBSCRIPTION_NAME}}
         azPSVersion: latest
 
 #created an approval gate for this step. Just in case you do not want to redeploy an App Service.
@@ -91,13 +91,13 @@ jobs:
     - name: Login to Azure
       uses: azure/login@v1
       with:
-        creds: ${{secrets.AZURE_CREDENTIALS}}
+        creds: ${{secrets.AZURE_CREDENTIALS2}}
         enable-AzPSSession: true
     - name: Deploy app service
       uses: Azure/powershell@v1
       with: 
         inlineScript: |
-          Select-AzSubscription ${{secrets.AZURE_SUBSCRIPTIONID}}
+          Select-AzSubscription ${{secrets.AZURE_SUBSCRIPTIONID2}}
           New-AzResourceGroupDeployment -ResourceGroupName ${{ env.resourceGroupName }} -TemplateFile ${{ env.appserviceTemplate }}
         azPSVersion: latest
 
@@ -109,7 +109,7 @@ jobs:
     - name: Login to Azure
       uses: azure/login@v1
       with:
-        creds: ${{secrets.AZURE_CREDENTIALS}}
+        creds: ${{secrets.AZURE_CREDENTIALS2}}
         enable-AzPSSession: true
     - name: Wait for 15 minutes
       uses: Azure/powershell@v1
@@ -122,6 +122,6 @@ jobs:
       uses: Azure/powershell@v1
       with:
         inlineScript: |
-          Select-AzSubscription ${{secrets.AZURE_SUBSCRIPTIONID}}
+          Select-AzSubscription ${{secrets.AZURE_SUBSCRIPTIONID2}}
           Start-AzPolicyComplianceScan -ResourceGroupName ${{ env.resourceGroupName }}
         azPSVersion: latest

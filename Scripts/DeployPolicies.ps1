@@ -11,8 +11,13 @@ If the policyset already exist, it will perform an update to the policy set.
 
 #>
 
+param (
+    $SubscriptionName
+)
+
 $PolicyTemplateFiles = Get-ChildItem -Path PolicyTemplates\policydefinitions
-$Subscription = Get-AzSubscription -SubscriptionName 'Visual Studio Enterprise'
+$Subscription = Get-AzSubscription -SubscriptionName $SubscriptionName #use this for Subscription assignments
+$ResourceGroupName = Get-AzResourceGroup -Name 'rutgerpels-ishare-testenv-weu' #use this for ResourceGroup assignments
 
 ForEach ($PolicyTemplateFiles in $PolicyTemplateFiles) {
     #Check if there is a file which needs to be removed
@@ -23,7 +28,7 @@ ForEach ($PolicyTemplateFiles in $PolicyTemplateFiles) {
     }
     else {
         #Deploy Policy Definition
-        $Policydefinition = New-AzPolicyDefinition `
+        New-AzPolicyDefinition `
             -Name (($PolicyTemplateFiles.Name).Split(".")[0]) `
             -Policy $PolicyTemplateFiles.FullName `
             -SubscriptionId $($Subscription.Id)
@@ -41,7 +46,7 @@ if ($notPresent) {
     New-AzPolicyAssignment `
         -Name 'AppServicePolicyAssignment' `
         -PolicyDefinition $newPolicySetDefinition `
-        -Scope $Subscription `
+        -Scope $ResourceGroupName.ResourceId `
         -AssignIdentity `
         -Location 'west europe'
 
