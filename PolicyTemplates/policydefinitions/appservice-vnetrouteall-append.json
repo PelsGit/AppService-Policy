@@ -1,0 +1,36 @@
+{
+  "properties": {
+    "displayName": "App Service Append vnet route all",
+    "policyType": "Custom",
+    "mode": "All",
+    "description": "This policy will set the Vnet Route all to true",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "App Service"
+    },
+    "parameters": {},
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Web/sites/config"
+          },
+          {
+            "field": "Microsoft.Web/sites/config/vnetRouteAllEnabled",
+            "equals": false
+          }
+        ]
+      },
+      "then": {
+        "effect": "append",
+        "details": [
+          {
+            "field": "Microsoft.Web/sites/config/vnetRouteAllEnabled",
+            "value": true
+          }
+        ]
+      }
+    }
+  }
+}
