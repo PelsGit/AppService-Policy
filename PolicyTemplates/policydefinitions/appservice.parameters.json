@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "appServicePlanName": {
-            "value": "<replace>"
+            "value": ""
         },
         "sku": {
             "value": "P1V2"
@@ -28,28 +28,27 @@
         },
         "corsAllowedOrigins": {
             "value": [
-                "https://nl.abnamro.com",
                 "https://portal.azure.com"
             ]
         },
         "ipSecurityRestrictions": {
             "value": [
                 {
-                    "ipAddress": "167.202.201.0/27",
+                    "ipAddress": "",
                     "action": "Allow",
                     "priority": 1,
                     "name": "AllowedIPAddress1",
                     "description": "AllowedIPAddress1"
                 },
                 {
-                    "ipAddress": "164.140.188.224/28",
+                    "ipAddress": "",
                     "action": "Allow",
                     "priority": 2,
                     "name": "AllowedIPAddress2",
                     "description": "AllowedIPAddress2"
                 },
                 {
-                    "ipAddress": "164.140.203.224/28",
+                    "ipAddress": "",
                     "action": "Allow",
                     "priority": 3,
                     "name": "AllowedIPAddress3",
@@ -60,21 +59,21 @@
         "scmIpSecurityRestrictions": {
             "value": [
                 {
-                    "ipAddress": "167.202.201.0/27",
+                    "ipAddress": "",
                     "action": "Allow",
                     "priority": 1,
                     "name": "AllowedIPAddress1",
                     "description": "AllowedIPAddress1"
                 },
                 {
-                    "ipAddress": "164.140.188.224/28",
+                    "ipAddress": "",
                     "action": "Allow",
                     "priority": 2,
                     "name": "AllowedIPAddress2",
                     "description": "AllowedIPAddress2"
                 },
                 {
-                    "ipAddress": "164.140.203.224/28",
+                    "ipAddress": "",
                     "action": "Allow",
                     "priority": 3,
                     "name": "AllowedIPAddress3",
@@ -98,7 +97,7 @@
             "value": true
         },
         "appServiceName": {
-            "value": "apiapp-crit-com1"
+            "value": ""
         },
         "defaultProvider": {
             "value": "AzureActiveDirectory"
@@ -107,7 +106,7 @@
             "value": true
         },
         "vnetName": {
-            "value": "appservicepublic-vnet"
+            "value": ""
         }
     }
 }
