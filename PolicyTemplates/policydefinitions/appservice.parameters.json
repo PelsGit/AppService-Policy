@@ -1,0 +1,113 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "appServicePlanName": {
+            "value": "<replace>"
+        },
+        "sku": {
+            "value": "P1V2"
+        },
+        "location": {
+            "value": "west europe"
+        },
+        "appServiceKind": {
+            "value": "api"
+        },
+        "skuFamily": {
+            "value": "Pv2"
+        },
+        "skuTier": {
+            "value": "Premium"
+        },
+        "httpsOnlyAllowed": {
+            "value": true
+        },
+        "ftpsState": {
+            "value": "Disabled"
+        },
+        "corsAllowedOrigins": {
+            "value": [
+                "https://nl.abnamro.com",
+                "https://portal.azure.com"
+            ]
+        },
+        "ipSecurityRestrictions": {
+            "value": [
+                {
+                    "ipAddress": "167.202.201.0/27",
+                    "action": "Allow",
+                    "priority": 1,
+                    "name": "AllowedIPAddress1",
+                    "description": "AllowedIPAddress1"
+                },
+                {
+                    "ipAddress": "164.140.188.224/28",
+                    "action": "Allow",
+                    "priority": 2,
+                    "name": "AllowedIPAddress2",
+                    "description": "AllowedIPAddress2"
+                },
+                {
+                    "ipAddress": "164.140.203.224/28",
+                    "action": "Allow",
+                    "priority": 3,
+                    "name": "AllowedIPAddress3",
+                    "description": "AllowedIPAddress3"
+                }
+            ]
+        },
+        "scmIpSecurityRestrictions": {
+            "value": [
+                {
+                    "ipAddress": "167.202.201.0/27",
+                    "action": "Allow",
+                    "priority": 1,
+                    "name": "AllowedIPAddress1",
+                    "description": "AllowedIPAddress1"
+                },
+                {
+                    "ipAddress": "164.140.188.224/28",
+                    "action": "Allow",
+                    "priority": 2,
+                    "name": "AllowedIPAddress2",
+                    "description": "AllowedIPAddress2"
+                },
+                {
+                    "ipAddress": "164.140.203.224/28",
+                    "action": "Allow",
+                    "priority": 3,
+                    "name": "AllowedIPAddress3",
+                    "description": "AllowedIPAddress3"
+                }
+            ]
+        },
+        "minTlsVersion": {
+            "value": "1.2"
+        },
+        "scmMinTlsVersion": {
+            "value": "1.2"
+        },
+        "vnetRouteAllEnabled": {
+            "value": true
+        },
+        "publicNetworkAccess": {
+            "value": "Disabled"
+        },
+        "swiftSupported": {
+            "value": true
+        },
+        "appServiceName": {
+            "value": "apiapp-crit-com1"
+        },
+        "defaultProvider": {
+            "value": "AzureActiveDirectory"
+        },
+        "scmIpSecurityRestrictionsUseMain": {
+            "value": true
+        },
+        "vnetName": {
+            "value": "appservicepublic-vnet"
+        }
+    }
+}
