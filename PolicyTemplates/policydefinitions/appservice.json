@@ -1,0 +1,277 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "appServicePlanName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of AppService plan"
+            }
+        },
+        "location": {
+            "type": "string",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+        },
+        "appServiceKind": {
+            "type": "string",
+            "allowedValues": [
+                "api",
+                "functionapp",
+                "app"
+            ],
+            "metadata": {
+                "description": "specify the kind of app service you want to deploy"
+            }
+        },
+        "sku": {
+            "type": "string",
+            "allowedValues": [
+                "P1",
+                "P2",
+                "P3",
+                "P1V2",
+                "P2V2",
+                "P3V2"
+            ],
+            "metadata": {
+                "description": "The SKU of App Service Plan. !!Warning!! This parameter is related to the family parameter."
+            }
+        },
+        "skuFamily": {
+            "type": "string",
+            "allowedValues": [
+                "Pv2",
+                "Pv3",
+                "EP",
+                "P"
+            ],
+            "metadata": {
+                "description": "The Family of the SKU. If the family is not within the allowed value list, it will be denied by Policy"
+            }
+        },
+        "skuTier": {
+            "type": "string",
+            "allowedValues": [
+                "Premium",
+                "PremiumV2",
+                "PremiumV3",
+                "ElasticPremium"
+            ],
+            "metadata": {
+                "description": "The Family of the SKU. If the family is not within the allowed value list, it will be denied by Policy"
+            }
+        },
+        "httpsOnlyAllowed": {
+            "type": "bool",
+            "metadata": {
+                "description": "configures a web site to accept only https requests. Issues redirect for http requests"
+            }
+        },
+        "ftpsState": {
+            "type": "string",
+            "metadata": {
+                "description": "State of FTP / FTPS service. This needs to be set to 'Disabled' in order to be compliant with the FTP State deny policy."
+            }
+        },
+        "corsAllowedOrigins": {
+            "type": "array",
+            "metadata": {
+                "description": "Gets or sets the list of origins that should be allowed to make cross-origin calls. This can not be set with a wildcard (*) or it will be denied by the Cors deny policy."
+            }
+        },
+        "appServiceName": {
+            "type": "string",
+            "metadata": {
+                "description": "the name of the app service"
+            }
+        },
+        "ipSecurityRestrictions": {
+            "type": "array",
+            "metadata": {
+                "description": "an array of allowed iprule restrictions which populate the field IPSecurity"
+            }
+        },
+        "scmIpSecurityRestrictions": {
+            "type": "array",
+            "metadata": {
+                "description": "an array of allowed iprule restrictions which populate the field IPSecurity"
+            }
+        },
+        "minTlsVersion": {
+            "type": "string",
+            "metadata": {
+                "description": "MinTlsVersion: configures the minimum version of TLS required for SSL requests"
+            }
+        },
+        "scmMinTlsVersion": {
+            "type": "string",
+            "metadata": {
+                "description": "scMinTlsVersion: configures the minimum version of TLS required for SSL requests"
+            }
+        },
+        "vnetRouteAllEnabled": {
+            "type": "bool",
+            "metadata": {
+                "description": "Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied. This needs to be set to 'true' in order to be compliant with the vnetrouteall deny policy."
+            }
+        },
+        "publicNetworkAccess": {
+            "type": "string",
+            "metadata": {
+                "description": "Property to allow or block all public traffic. This needs to be set to disabled in order to be compliant with public network access deny policies"
+            }
+        },
+        "swiftSupported": {
+            "type": "bool",
+            "metadata": {
+                "description": "A flag that specifies if the scale unit this Web App is on supports Swift integration."
+            }
+        },
+        "defaultProvider": {
+            "type": "string",
+            "metadata": {
+                "description": "The Default Provider (e.g. AzureActiveDirectory) used for authentication."
+            }
+        },
+        "scmIpSecurityRestrictionsUseMain": {
+            "type": "bool",
+            "metadata": {
+                "description": "When this value is set to true, the scm Ip Security restriction rules are applied to the web/sites field as well."
+            }
+        },
+        "vnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the Virtual Network, used for outbound connectivity."
+            }
+        }
+    },
+    "variables": {
+        "vnetAddressPrefix": "10.128.0.0/16",
+        "subnetApp": "appSubnet",
+        "subnetAppAddressPrefix": "10.128.1.0/24",
+        "subnetPLE": "PLESubnet",
+        "subnetPLEAddressPrefix": "10.128.2.0/24",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
+        "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), variables('subnetApp'))]"
+    },
+    "resources": [
+        {
+            "apiVersion": "2020-12-01",
+            "type": "Microsoft.Web/serverfarms",
+            "name": "[parameters('appServicePlanName')]",
+            "location": "[parameters('location')]",
+            "sku": {
+                "name": "[parameters('sku')]",
+                "tier": "[parameters('skuTier')]",
+                "size": "[parameters('sku')]",
+                "family": "[parameters('skuFamily')]"
+            }
+        },
+        {
+            "apiVersion": "2020-12-01",
+            "type": "Microsoft.Web/sites",
+            "name": "[parameters('appServiceName')]",
+            "kind": "[parameters('appServiceKind')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+            ],
+            "properties": {
+                "serverFarmId": "[variables('serverFarmId')]",
+                "httpsOnly": "[parameters('httpsOnlyAllowed')]"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2020-12-01",
+            "name": "[concat(parameters('appServiceName'), '/web')]",
+            "properties": {
+                "ftpsState": "[parameters('ftpsState')]",
+                "cors": {
+                    "allowedOrigins": "[parameters('corsAllowedOrigins')]"
+                },
+                "defaultProvider": "[parameters('defaultProvider')]",
+                "minTlsVersion": "[parameters('minTlsVersion')]",
+                "scmMinTlsVersion": "[parameters('scmMinTlsVersion')]",
+                "vnetRouteAllEnabled": "[parameters('vnetRouteAllEnabled')]",
+                "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
+                "scmIpSecurityRestrictionsUseMain": "[parameters('scmIpSecurityRestrictionsUseMain')]",
+                "copy": [
+                    {
+                        "name": "ipSecurityRestrictions",
+                        "count": "[length(parameters('ipSecurityRestrictions'))]",
+                        "input": {
+                            "ipAddress": "[concat(parameters('ipSecurityRestrictions')[copyIndex('ipSecurityRestrictions')].ipAddress)]",
+                            "action": "[concat(parameters('ipSecurityRestrictions')[copyIndex('ipSecurityRestrictions')].action)]",
+                            "priority": "[concat(parameters('ipSecurityRestrictions')[copyIndex('ipSecurityRestrictions')].priority)]",
+                            "name": "[concat(parameters('ipSecurityRestrictions')[copyIndex('ipSecurityRestrictions')].name)]"
+                        }
+                    },
+                    {
+                        "name": "scmIpSecurityRestrictions",
+                        "count": "[length(parameters('ipSecurityRestrictions'))]",
+                        "input": {
+                            "ipAddress": "[concat(parameters('scmIpSecurityRestrictions')[copyIndex('scmIpSecurityRestrictions')].ipAddress)]",
+                            "action": "[concat(parameters('scmIpSecurityRestrictions')[copyIndex('scmIpSecurityRestrictions')].action)]",
+                            "priority": "[concat(parameters('scmIpSecurityRestrictions')[copyIndex('scmIpSecurityRestrictions')].priority)]",
+                            "name": "[concat(parameters('scmIpSecurityRestrictions')[copyIndex('scmIpSecurityRestrictions')].name)]"
+                        }
+                    }
+                ]
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('appServiceName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/networkConfig",
+            "apiVersion": "2020-12-01",
+            "name": "[concat(parameters('appServiceName'), '/virtualNetwork')]",
+            "properties": {
+                "subnetResourceId": "[variables('subnetRef')]",
+                "swiftSupported": "[parameters('swiftSupported')]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('appServiceName'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
+            ]
+        },
+        {
+            "name": "[parameters('vnetName')]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "2020-11-01",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [ "[variables('vnetAddressPrefix')]" ]
+                },
+                "subnets": [
+                    {
+                        "name": "[variables('subnetApp')]",
+                        "properties": {
+                            "addressPrefix": "[variables('subnetAppAddressPrefix')]",
+                            "delegations": [
+                                {
+                                    "name": "appDelegation",
+                                    "properties": {
+                                        "serviceName": "Microsoft.Web/serverFarms"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "[variables('subnetPLE')]",
+                        "properties": {
+                            "addressPrefix": "[variables('subnetPLEAddressPrefix')]",
+                            "delegations": []
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
