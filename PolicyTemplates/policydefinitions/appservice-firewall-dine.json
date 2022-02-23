@@ -1,0 +1,110 @@
+{
+    "properties": {
+        "displayName": "App Service Firewall Deploy if Not Exists",
+        "policyType": "Custom",
+        "mode": "All",
+        "description": "This policy will deploy a set of firewall rules to the app service",
+        "metadata": {
+            "version": "1.0.0",
+            "category": "App Service"
+        },
+        "parameters": {},
+        "policyRule": {
+            "if": {
+                "field": "type",
+                "equals": "Microsoft.Web/sites"
+            },
+            "then": {
+                "effect": "DeployIfNotExists",
+                "details": {
+                    "type": "Microsoft.Web/sites/config",
+                    "name": "current",
+                    "evaluationDelay": "AfterProvisioning",
+                    "roleDefinitionIds": [
+                        "/subscriptions/{subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/{roleGUID}",
+                        "/providers/Microsoft.Authorization/roleDefinitions/{builtinroleGUID}"
+                    ],
+                    "deployment": {
+                        "properties": {
+                            "mode": "incremental",
+                            "parameters": {
+                                "fullDbName": {
+                                    "value": "[field('fullName')]"
+                                },
+                                "ipSecurityRestrictions": {
+                                    "value": [
+                                        {
+                                            "ipAddress": "",
+                                            "action": "Allow",
+                                            "priority": 1,
+                                            "name": "AllowedIPAddress1",
+                                            "description": "AllowedIPAddress1"
+                                        },
+                                        {
+                                            "ipAddress": "",
+                                            "action": "Allow",
+                                            "priority": 2,
+                                            "name": "AllowedIPAddress2",
+                                            "description": "AllowedIPAddress2"
+                                        },
+                                        {
+                                            "ipAddress": "",
+                                            "action": "Allow",
+                                            "priority": 3,
+                                            "name": "AllowedIPAddress3",
+                                            "description": "AllowedIPAddress3"
+                                        }
+                                    ]
+                                },
+                                "scmIpSecurityRestrictions": {
+                                    "value": [
+                                        {
+                                            "ipAddress": "",
+                                            "action": "Allow",
+                                            "priority": 1,
+                                            "name": "AllowedIPAddress1",
+                                            "description": "AllowedIPAddress1"
+                                        },
+                                        {
+                                            "ipAddress": "",
+                                            "action": "Allow",
+                                            "priority": 2,
+                                            "name": "AllowedIPAddress2",
+                                            "description": "AllowedIPAddress2"
+                                        },
+                                        {
+                                            "ipAddress": "",
+                                            "action": "Allow",
+                                            "priority": 3,
+                                            "name": "AllowedIPAddress3",
+                                            "description": "AllowedIPAddress3"
+                                        }
+                                    ]
+                                }
+                            },
+                            "template": {
+                                "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                                "contentVersion": "1.0.0.0",
+                                "parameters": {
+                                    "fullDbName": {
+                                        "type": "string"
+                                    }
+                                },
+                                "resources": [
+                                    {
+                                        "name": "[concat(parameters('fullDbName'), '/current')]",
+                                        "type": "Microsoft.Web/sites/config",
+                                        "apiVersion": "2014-04-01",
+                                        "properties": {
+                                            "status": "Enabled"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
