@@ -15,7 +15,7 @@
                 "equals": "Microsoft.Web/sites"
             },
             "then": {
-                "effect": "DeployIfNotExists",
+                "effect": "deployIfNotExists",
                 "details": {
                     "type": "Microsoft.Web/sites/config",
                     "name": "web",
