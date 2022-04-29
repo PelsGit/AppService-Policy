@@ -11,8 +11,12 @@
         "parameters": {},
         "policyRule": {
             "if": {
-                "field": "type",
-                "equals": "Microsoft.Web/sites"
+                "allof": [
+                    {
+                        "field": "type",
+                        "equals": "Microsoft.Web/sites"
+                    }
+                ]
             },
             "then": {
                 "effect": "deployIfNotExists",
