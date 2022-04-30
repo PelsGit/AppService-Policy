@@ -1,7 +1,7 @@
 on: push
 
 env:
-  resourceGroupName: rutgerpels-ishare-testenv-weu
+  resourceGroupName: appservice-RG
   appserviceTemplate: Templates/AppService.json
 
 jobs:
