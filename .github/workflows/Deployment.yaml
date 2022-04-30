@@ -37,7 +37,7 @@ jobs:
     - name: Login to Azure
       uses: azure/login@v1
       with:
-        creds: ${{secrets.AZURE_CREDENTIALS2}}
+        creds: ${{secrets.AZURE_CREDENTIALS}}
         enable-AzPSSession: true
     - name: Check Policy Deployments
       uses: Azure/powershell@v1
@@ -67,7 +67,7 @@ jobs:
     - name: Login to Azure
       uses: azure/login@v1
       with:
-        creds: ${{secrets.AZURE_CREDENTIALS2}}
+        creds: ${{secrets.AZURE_CREDENTIALS}}
         enable-AzPSSession: true
     - name: Run Deploy Policies
       uses: Azure/powershell@v1
@@ -91,7 +91,7 @@ jobs:
     - name: Login to Azure
       uses: azure/login@v1
       with:
-        creds: ${{secrets.AZURE_CREDENTIALS2}}
+        creds: ${{secrets.AZURE_CREDENTIALS}}
         enable-AzPSSession: true
     - name: Deploy app service
       uses: Azure/powershell@v1
@@ -108,7 +108,7 @@ jobs:
     - name: Login to Azure
       uses: azure/login@v1
       with:
-        creds: ${{secrets.AZURE_CREDENTIALS2}}
+        creds: ${{secrets.AZURE_CREDENTIALS}}
         enable-AzPSSession: true
     - name: Wait for 15 minutes
       uses: Azure/powershell@v1
