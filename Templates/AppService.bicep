@@ -2,12 +2,14 @@ param skuName string = 'S1'
 param skuCapacity int = 1
 param location string = resourceGroup().location
 param appName string = uniqueString(resourceGroup().id)
+param resourceGroupName string = 'Pelstest-RG'
 
 var appServicePlanName = toLower('asp-${appName}')
 var webSiteName = toLower('wapp-${appName}')
 
 resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
   name: 'Rutger-Vnet'
+  scope: resourceGroup(resourceGroupName)
 }
 
 resource Subnet  'Microsoft.Network/virtualNetworks/subnets@2021-05-01' existing = {
