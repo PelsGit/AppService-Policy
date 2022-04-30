@@ -103,7 +103,6 @@ jobs:
 
   Compliancy-Scan:
     runs-on: ubuntu-latest
-    if: always()
     needs: Deploy-Appservice
     steps:
     - name: Login to Azure
