@@ -14,7 +14,7 @@
                 "allof": [
                     {
                         "field": "type",
-                        "equals": "Microsoft.Web/sites"
+                        "equals": "Microsoft.Web/sites/config"
                     }
                 ]
             },
