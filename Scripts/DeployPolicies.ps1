@@ -47,7 +47,7 @@ if ($notPresent) {
     New-AzPolicyAssignment `
         -Name 'AppServicePolicyAssignment' `
         -PolicySetDefinition $newPolicySetDefinition `
-        -Scope $ResourceGroupNameAssignment.ResourceId `
+        -Scope $Subscription.ResourceId `
         -AssignIdentity `
         -Location 'west europe'
 
