@@ -19,7 +19,7 @@
                 "details": {
                     "type": "Microsoft.Web/sites/config",
                     "existenceCondition": {
-                        "aloff": [
+                        "allof": [
                             {
                                 "count": {
                                     "field": "Microsoft.Web/sites/config/ipSecurityRestrictions[*]",
