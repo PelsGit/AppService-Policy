@@ -18,7 +18,38 @@
                 "effect": "deployIfNotExists",
                 "details": {
                     "type": "Microsoft.Web/sites/config",
-                    "name": "web",
+                    "existenceCondition": {
+                        "aloff": [
+                            {
+                                "count": {
+                                    "field": "Microsoft.Web/sites/config/ipSecurityRestrictions[*]",
+                                    "where": {
+                                        "allof": [
+                                            {
+                                                "field": "Microsoft.Web/sites/config/ipSecurityRestrictions[*].ipAddress",
+                                                "equals": "192.168.1.0/32"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "equals": 1
+                            },
+                            {
+                                "count": {
+                                    "field": "Microsoft.Web/sites/config/web.scmIpSecurityRestrictions[*]",
+                                    "where": {
+                                        "allof": [
+                                            {
+                                                "field": "Microsoft.Web/sites/config/web.scmIpSecurityRestrictions[*].ipAddress",
+                                                "equals": "192.168.1.0/32"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "equals": 1
+                            }
+                        ]
+                    },
                     "evaluationDelay": "AfterProvisioning",
                     "roleDefinitionIds": [
                         "/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
