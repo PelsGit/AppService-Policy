@@ -16,11 +16,8 @@ param (
     $ResourceGroupName
 )
 
-install-module Az.ManagedServiceIdentity
-
 $PolicyTemplateFiles = Get-ChildItem -Path PolicyTemplates\policydefinitions
 $Subscription = Get-AzSubscription -SubscriptionName $SubscriptionName
-$UserAssignedIdentity = Get-AzUserAssignedIdentity -ResourceGroupName 'Pelstest-RG' -Name 'PolicyIdentity'
 
 ForEach ($PolicyTemplateFiles in $PolicyTemplateFiles) {
     #Check if there is a file which needs to be removed
