@@ -16,6 +16,8 @@ param (
     $ResourceGroupName
 )
 
+import-module Az.ManagedServiceIdentity
+
 $PolicyTemplateFiles = Get-ChildItem -Path PolicyTemplates\policydefinitions
 $Subscription = Get-AzSubscription -SubscriptionName $SubscriptionName
 $UserAssignedIdentity = Get-AzUserAssignedIdentity -ResourceGroupName 'Pelstest-RG' -Name 'PolicyIdentity'
