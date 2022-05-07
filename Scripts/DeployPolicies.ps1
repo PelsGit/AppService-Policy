@@ -16,7 +16,7 @@ param (
     $ResourceGroupName
 )
 
-import-module Az.ManagedServiceIdentity
+install-module Az.ManagedServiceIdentity
 
 $PolicyTemplateFiles = Get-ChildItem -Path PolicyTemplates\policydefinitions
 $Subscription = Get-AzSubscription -SubscriptionName $SubscriptionName
