@@ -50,7 +50,7 @@ if ($notPresent) {
         -Name 'AppServicePolicy' `
         -PolicySetDefinition $newPolicySetDefinition `
         -Scope $Subscription.ResourceId `
-        -IdentityId $UserAssignedIdentity.Id `
+        -IdentityId '64b28c1f-6a7c-4360-842c-8da875961a33' `
         -Location 'west europe'
 
         write-verbose -Message "policyset does not exist, creaing new one and assigning to correct scope"
