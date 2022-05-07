@@ -18,7 +18,7 @@ param (
 
 $PolicyTemplateFiles = Get-ChildItem -Path PolicyTemplates\policydefinitions
 $Subscription = Get-AzSubscription -SubscriptionName $SubscriptionName
-$ResourceGroupNameAssignment = Get-AzResourceGroup -Name $ResourceGroupName
+$UserAssignedIdentity = Get-AzUserAssignedIdentity -ResourceGroupName 'Pelstest-RG' -Name 'PolicyIdentity'
 
 ForEach ($PolicyTemplateFiles in $PolicyTemplateFiles) {
     #Check if there is a file which needs to be removed
@@ -45,10 +45,10 @@ if ($notPresent) {
         -PolicyDefinition "PolicyTemplates\policyset\policyset.json"
 
     New-AzPolicyAssignment `
-        -Name 'AppServicePolicyAssignment' `
+        -Name 'AppServicePolicy' `
         -PolicySetDefinition $newPolicySetDefinition `
         -Scope $Subscription.ResourceId `
-        -AssignIdentity `
+        -IdentityId $UserAssignedIdentity.Id `
         -Location 'west europe'
 
         write-verbose -Message "policyset does not exist, creaing new one and assigning to correct scope"
