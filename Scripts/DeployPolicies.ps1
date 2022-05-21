@@ -39,6 +39,7 @@ ForEach ($PolicyTemplateFiles in $PolicyTemplateFiles) {
 $Policyset = get-AzPolicySetDefinition -Name 'app-service-policy-set' -ErrorVariable notPresent -ErrorAction SilentlyContinue
 
 if ($notPresent) {
+    $UserAssignedIdentity = Get-AzUserAssignedIdentity -ResourceGroupName $ResourceGroupName -Name 'UserAssignedIdentity1'
     $newPolicySetDefinition = New-AzPolicySetDefinition `
         -Name 'app-service-policy-set' `
         -PolicyDefinition "PolicyTemplates\policyset\policyset.json"
@@ -47,7 +48,8 @@ if ($notPresent) {
         -Name 'AppServicePolicy' `
         -PolicySetDefinition $newPolicySetDefinition `
         -Scope "/subscriptions/$($Subscription.Id)" `
-        -AssignIdentity `
+        -IdentityType "UserAssigned" `
+        -IdentityId $UserAssignedIdentity.Id `
         -Location 'west europe'
 
         write-verbose -Message "policyset does not exist, creaing new one and assigning to correct scope"
