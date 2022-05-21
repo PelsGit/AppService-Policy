@@ -45,9 +45,9 @@ if ($notPresent) {
 
     New-AzPolicyAssignment `
         -Name 'AppServicePolicy' `
-        -PolicySetDefinition $newPolicySetDefinition `
+        -PolicySetDefinition $policyset `
         -Scope "/subscriptions/$($Subscription.Id)" `
-        -IdentityId '64b28c1f-6a7c-4360-842c-8da875961a33' `
+        -AssignIdentity `
         -Location 'west europe'
 
         write-verbose -Message "policyset does not exist, creaing new one and assigning to correct scope"
