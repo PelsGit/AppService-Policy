@@ -52,7 +52,7 @@
                     },
                     "evaluationDelay": "AfterProvisioning",
                     "roleDefinitionIds": [
-                        "/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
+                        "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
                     ],
                     "deployment": {
                         "properties": {
@@ -83,56 +83,52 @@
                                         "apiVersion": "2020-09-01",
                                         "location": "[parameters('location')]",
                                         "properties": {
-                                            "ipSecurityRestrictions": {
-                                                "value": [
-                                                    {
-                                                        "ipAddress": "192.168.1.0",
-                                                        "action": "Allow",
-                                                        "priority": 1,
-                                                        "name": "AllowedIPAddress1",
-                                                        "description": "AllowedIPAddress1"
-                                                    },
-                                                    {
-                                                        "ipAddress": "192.168.1.1",
-                                                        "action": "Allow",
-                                                        "priority": 2,
-                                                        "name": "AllowedIPAddress2",
-                                                        "description": "AllowedIPAddress2"
-                                                    },
-                                                    {
-                                                        "ipAddress": "192.168.1.2",
-                                                        "action": "Allow",
-                                                        "priority": 3,
-                                                        "name": "AllowedIPAddress3",
-                                                        "description": "AllowedIPAddress3"
-                                                    }
-                                                ]
-                                            },
-                                            "scmIpSecurityRestrictions": {
-                                                "value": [
-                                                    {
-                                                        "ipAddress": "192.168.1.0",
-                                                        "action": "Allow",
-                                                        "priority": 1,
-                                                        "name": "AllowedIPAddress1",
-                                                        "description": "AllowedIPAddress1"
-                                                    },
-                                                    {
-                                                        "ipAddress": "192.168.1.1",
-                                                        "action": "Allow",
-                                                        "priority": 2,
-                                                        "name": "AllowedIPAddress2",
-                                                        "description": "AllowedIPAddress2"
-                                                    },
-                                                    {
-                                                        "ipAddress": "192.168.1.2",
-                                                        "action": "Allow",
-                                                        "priority": 3,
-                                                        "name": "AllowedIPAddress3",
-                                                        "description": "AllowedIPAddress3"
-                                                    }
-                                                ]
-                                            }
+                                            "ipSecurityRestrictions": [
+                                                {
+                                                    "ipAddress": "192.168.1.0",
+                                                    "action": "Allow",
+                                                    "priority": 1,
+                                                    "name": "AllowedIPAddress1",
+                                                    "description": "AllowedIPAddress1"
+                                                },
+                                                {
+                                                    "ipAddress": "192.168.1.1",
+                                                    "action": "Allow",
+                                                    "priority": 2,
+                                                    "name": "AllowedIPAddress2",
+                                                    "description": "AllowedIPAddress2"
+                                                },
+                                                {
+                                                    "ipAddress": "192.168.1.2",
+                                                    "action": "Allow",
+                                                    "priority": 3,
+                                                    "name": "AllowedIPAddress3",
+                                                    "description": "AllowedIPAddress3"
+                                                }
+                                            ],
+                                            "scmIpSecurityRestrictions": [
+                                                {
+                                                    "ipAddress": "192.168.1.0",
+                                                    "action": "Allow",
+                                                    "priority": 1,
+                                                    "name": "AllowedIPAddress1",
+                                                    "description": "AllowedIPAddress1"
+                                                },
+                                                {
+                                                    "ipAddress": "192.168.1.1",
+                                                    "action": "Allow",
+                                                    "priority": 2,
+                                                    "name": "AllowedIPAddress2",
+                                                    "description": "AllowedIPAddress2"
+                                                },
+                                                {
+                                                    "ipAddress": "192.168.1.2",
+                                                    "action": "Allow",
+                                                    "priority": 3,
+                                                    "name": "AllowedIPAddress3",
+                                                    "description": "AllowedIPAddress3"
+                                                }
+                                            ]
                                         }
                                     }
                                 ]
