@@ -1,10 +1,8 @@
-on:
-  push:
-    branches: [ $default-branch ]
+on: push
 
-# env:
-#   resourceGroupName: Dev-Pels-01
-#   bicepfilePath: main.bicep
+env:
+  resourceGroupName: appservice-RG
+  appserviceTemplate: Templates/AppService.json
 
 jobs:
   Build-Artifacts:
@@ -12,91 +10,117 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2.3.4
-
-    - name: Upload a Build Artifact
+    - name: build Bicep file
+      uses: Azure/cli@1.0.4
+      with:
+        inlineScript: |
+          az bicep build --file Templates/AppService.bicep --outfile ${{ env.appserviceTemplate }}
+    - name: Upload Template Artifacts
       uses: actions/upload-artifact@v2.2.4
       with:
-        name: policy-templates
-        path: PolicyTemplates
+        name: build-artifacts 
+        path: |
+          PolicyTemplates
+          Scripts
+          Templates
 
-  # Test-Deployment:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: Checkout
-  #     uses: actions/checkout@v2.3.4
+  Test-Deployments:
+    runs-on: ubuntu-latest
+    needs: Build-Artifacts
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2.3.4
+    - name: Download Artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: build-artifacts
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZURE_CREDENTIALS}}
+        enable-AzPSSession: true
+    - name: Check Policy Deployments
+      uses: Azure/powershell@v1
+      with: 
+        inlineScript: |
+          .\Scripts\CheckPolicies.ps1
+        azPSVersion: latest
+    - name: Test web app deployment
+      uses: Azure/powershell@v1
+      with:
+        inlineScript: |
+          Select-AzSubscription ${{secrets.AZURE_SUBSCRIPTIONID}}
+          New-AzResourceGroupDeployment -ResourceGroupName ${{ env.resourceGroupName }} -TemplateFile ${{ env.appserviceTemplate }} -WhatIf
+        azPSVersion: latest
 
-  #   - name: Install from PSGallery
-  #     shell: pwsh
-  #     run: |
-  #       Set-PSRepository PSGallery -InstallationPolicy Trusted
-  #   - name: Login to Azure
-  #     uses: azure/login@v1
-  #     with:
-  #       creds: ${{secrets.AZURE_CREDENTIALS}}
-  #       enable-AzPSSession: true
+  Deploy-Policies:
+    runs-on: ubuntu-latest
+    environment: Deployment
+    needs: Test-Deployments
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2.3.4
+    - name: Download Artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: build-artifacts
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZURE_CREDENTIALS}}
+        enable-AzPSSession: true
+    - name: Run Deploy Policies
+      uses: Azure/powershell@v1
+      with: 
+        inlineScript: |
+          .\Scripts\DeployPolicies.ps1 -SubscriptionName ${{secrets.SUBSCRIPTION_NAME}} -ResourceGroupName ${{ env.resourceGroupName }}
+        azPSVersion: latest
 
-  #   - name: build Bicep file
-  #     uses: Azure/cli@1.0.4
-  #     with:
-  #       inlineScript: |
-  #         az bicep build --file ${{ env.bicepfilePath }} --outfile ./main.json
-  #   - name: Upload a Build Artifact
-  #     uses: actions/upload-artifact@v2.2.4
-  #     with:
-  #       path: ./main.json 
+#created an approval gate for this step. Just in case you do not want to redeploy an App Service.
+  Deploy-Appservice:
+    runs-on: ubuntu-latest
+    environment: Deployment
+    needs: Deploy-Policies
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2.3.4
+    - name: Download Artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: build-artifacts
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZURE_CREDENTIALS}}
+        enable-AzPSSession: true
+    - name: Deploy app service
+      uses: Azure/powershell@v1
+      with: 
+        inlineScript: |
+          Select-AzSubscription ${{secrets.AZURE_SUBSCRIPTIONID}}
+          New-AzResourceGroupDeployment -ResourceGroupName ${{ env.resourceGroupName }} -TemplateFile ${{ env.appserviceTemplate }}
+        azPSVersion: latest
 
-  #   - name: Create Resource Group
-  #     uses: Azure/powershell@v1
-  #     with:
-  #       inlineScript: |
-  #         Select-AzSubscription ${{secrets.AZURE_SUBSCRIPTIONID}}
-  #         New-AzResourceGroup -Name ${{ env.resourceGroupName }} -Location "West Europe" -Force
-  #         New-AzResourceGroupDeployment -ResourceGroupName ${{ env.resourceGroupName }} -TemplateFile ./main.json -WhatIf
-  #       azPSVersion: latest
-
-  # Deploy-Template:
-  #   runs-on: ubuntu-latest
-  #   needs: Test-Deployment
-  #   steps:
-  #   - name: Checkout
-  #     uses: actions/checkout@v2.3.4
-
-  #   - name: Login to Azure
-  #     uses: azure/login@v1
-  #     with:
-  #       creds: ${{secrets.AZURE_CREDENTIALS}}
-  #       enable-AzPSSession: true
-
-  #   - name: Deploy bicep to Azure
-  #     uses: Azure/cli@1.0.4
-  #     with:
-  #       inlineScript: |
-  #         az deployment group create \
-  #         --template-file ${{ env.bicepfilePath }} \
-  #         -g ${{ env.resourceGroupName }}
-  # Compliancy-Scan:
-  #   runs-on: ubuntu-latest
-  #   needs: Deploy-Template
-
-  #   steps:
-  #   - name: Login to Azure
-  #     uses: azure/login@v1
-  #     with:
-  #       creds: ${{secrets.AZURE_CREDENTIALS}}
-  #       enable-AzPSSession: true
-
-  #   - name: Wait for 15 minutes
-  #     uses: Azure/powershell@v1
-  #     with:
-  #       inlineScript: |
-  #         Write-Host "Going to sleep for 15 minutes"
-  #         Start-Sleep -s 900
-  #       azPSVersion: latest
-
-  #   - name: Run compliancy Scan
-  #     uses: Azure/powershell@v1
-  #     with:
-  #       inlineScript: |
-  #         Select-AzSubscription ${{secrets.AZURE_SUBSCRIPTIONID}}
-  #         Start-AzPolicyComplianceScan -ResourceGroupName ${{ env.resourceGroupName }}
-  #       azPSVersion: latest
+  Compliancy-Scan:
+    runs-on: ubuntu-latest
+    needs: Deploy-Appservice
+    steps:
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZURE_CREDENTIALS}}
+        enable-AzPSSession: true
+    - name: Wait for 15 minutes
+      uses: Azure/powershell@v1
+      with:
+        inlineScript: |
+          Write-Host "Going to sleep for 15 minutes"
+          Start-Sleep -s 900
+        azPSVersion: latest
+    - name: Run compliancy Scan
+      uses: Azure/powershell@v1
+      with:
+        inlineScript: |
+          Select-AzSubscription ${{secrets.AZURE_SUBSCRIPTIONID}}
+          Start-AzPolicyComplianceScan -ResourceGroupName ${{ env.resourceGroupName }}
+        azPSVersion: latest

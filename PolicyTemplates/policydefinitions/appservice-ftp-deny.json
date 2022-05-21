@@ -14,10 +14,10 @@
         "allOf": [
           {
             "field": "type",
-            "equals": "Microsoft.Web/sites"
+            "equals": "Microsoft.Web/sites/config"
           },
           {
-            "field": "Microsoft.Web/sites/siteConfig.ftpsState",
+            "field": "Microsoft.Web/sites/config/ftpsState",
             "notEquals": "Disabled"
           }
         ]

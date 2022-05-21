@@ -1,0 +1,38 @@
+{
+  "properties": {
+    "displayName": "App Service Append FTP",
+    "policyType": "Custom",
+    "mode": "All",
+    "description": "This policy will set the ftpsstate to disabled.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "App Service"
+    },
+    "parameters": {},
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Web/sites/config"
+          },
+          {
+            "not": {
+              "field": "Microsoft.Web/sites/config/ftpsState",
+              "equals": "Disabled"
+            }
+          }
+        ]
+      },
+      "then": {
+        "effect": "append",
+        "details": [
+          {
+            "field": "Microsoft.Web/sites/config/ftpsState",
+            "value": "Disabled"
+          }
+        ]
+      }
+    }
+  }
+}

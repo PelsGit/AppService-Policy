@@ -1,0 +1,142 @@
+{
+    "properties": {
+        "displayName": "App Service Firewall Deploy if Not Exists",
+        "policyType": "Custom",
+        "mode": "All",
+        "description": "This policy will deploy a set of firewall rules to the app service",
+        "metadata": {
+            "version": "1.0.0",
+            "category": "App Service"
+        },
+        "parameters": {},
+        "policyRule": {
+            "if": {
+                "field": "type",
+                "equals": "Microsoft.Web/sites"
+            },
+            "then": {
+                "effect": "deployIfNotExists",
+                "details": {
+                    "type": "Microsoft.Web/sites/config",
+                    "existenceCondition": {
+                        "allof": [
+                            {
+                                "count": {
+                                    "field": "Microsoft.Web/sites/config/ipSecurityRestrictions[*]",
+                                    "where": {
+                                        "allof": [
+                                            {
+                                                "field": "Microsoft.Web/sites/config/ipSecurityRestrictions[*].ipAddress",
+                                                "equals": "192.168.1.0/32"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "equals": 1
+                            },
+                            {
+                                "count": {
+                                    "field": "Microsoft.Web/sites/config/web.scmIpSecurityRestrictions[*]",
+                                    "where": {
+                                        "allof": [
+                                            {
+                                                "field": "Microsoft.Web/sites/config/web.scmIpSecurityRestrictions[*].ipAddress",
+                                                "equals": "192.168.1.0/32"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "equals": 1
+                            }
+                        ]
+                    },
+                    "evaluationDelay": "AfterProvisioning",
+                    "roleDefinitionIds": [
+                        "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                    ],
+                    "deployment": {
+                        "properties": {
+                            "mode": "incremental",
+                            "parameters": {
+                                "webAppName": {
+                                    "value": "[field('name')]"
+                                },
+                                "location": {
+                                    "value": "[field('location')]"
+                                }
+                            },
+                            "template": {
+                                "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                "contentVersion": "1.0.0.0",
+                                "parameters": {
+                                    "webAppName": {
+                                        "type": "string"
+                                    },
+                                    "location": {
+                                        "type": "string"
+                                    }
+                                },
+                                "resources": [
+                                    {
+                                        "name": "[concat(parameters('webAppName'), '/web')]",
+                                        "type": "Microsoft.Web/sites/config",
+                                        "apiVersion": "2020-09-01",
+                                        "location": "[parameters('location')]",
+                                        "properties": {
+                                            "ipSecurityRestrictions": [
+                                                {
+                                                    "ipAddress": "192.168.1.0/32",
+                                                    "action": "Allow",
+                                                    "priority": 1,
+                                                    "name": "AllowedIPAddress1",
+                                                    "description": "AllowedIPAddress1"
+                                                },
+                                                {
+                                                    "ipAddress": "192.168.1.1/32",
+                                                    "action": "Allow",
+                                                    "priority": 2,
+                                                    "name": "AllowedIPAddress2",
+                                                    "description": "AllowedIPAddress2"
+                                                },
+                                                {
+                                                    "ipAddress": "192.168.1.2/32",
+                                                    "action": "Allow",
+                                                    "priority": 3,
+                                                    "name": "AllowedIPAddress3",
+                                                    "description": "AllowedIPAddress3"
+                                                }
+                                            ],
+                                            "scmIpSecurityRestrictions": [
+                                                {
+                                                    "ipAddress": "192.168.1.0/32",
+                                                    "action": "Allow",
+                                                    "priority": 1,
+                                                    "name": "AllowedIPAddress1",
+                                                    "description": "AllowedIPAddress1"
+                                                },
+                                                {
+                                                    "ipAddress": "192.168.1.1/32",
+                                                    "action": "Allow",
+                                                    "priority": 2,
+                                                    "name": "AllowedIPAddress2",
+                                                    "description": "AllowedIPAddress2"
+                                                },
+                                                {
+                                                    "ipAddress": "192.168.1.2/32",
+                                                    "action": "Allow",
+                                                    "priority": 3,
+                                                    "name": "AllowedIPAddress3",
+                                                    "description": "AllowedIPAddress3"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

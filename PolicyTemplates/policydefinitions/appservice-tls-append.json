@@ -1,0 +1,38 @@
+{
+  "properties": {
+    "displayName": "App Service Append TLS",
+    "policyType": "Custom",
+    "mode": "All",
+    "description": "This policy will set the TLS version to 1.2",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "App Service"
+    },
+    "parameters": {},
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Web/sites/config"
+          },
+          {
+            "not": {
+              "field": "Microsoft.Web/sites/config/minTlsVersion",
+              "equals": "1.2"
+            }
+          }
+        ]
+      },
+      "then": {
+        "effect": "append",
+        "details": [
+          {
+            "field": "Microsoft.Web/sites/config/minTlsVersion",
+            "value": "1.2"
+          }
+        ]
+      }
+    }
+  }
+}

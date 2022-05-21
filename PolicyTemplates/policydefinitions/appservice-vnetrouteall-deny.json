@@ -1,0 +1,30 @@
+{
+  "properties": {
+    "displayName": "App Service Vnet Route All Deny",
+    "policyType": "Custom",
+    "mode": "All",
+    "description": "This policy will force an app service to have the Vnet Route All setting to true when Vnet Integration is used.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "App Service"
+    },
+    "parameters": {},
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Web/sites/config"
+          },
+          {
+            "field": "Microsoft.Web/sites/config/vnetRouteAllEnabled",
+            "equals": false
+          }
+        ]
+      },
+      "then": {
+        "effect": "deny"
+      }
+    }
+  }
+}
