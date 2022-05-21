@@ -18,6 +18,7 @@ param (
 
 $PolicyTemplateFiles = Get-ChildItem -Path PolicyTemplates\policydefinitions
 $Subscription = Get-AzSubscription -SubscriptionName $SubscriptionName
+Install-Module -Name Az.ManagedServiceIdentity -AcceptLicense -AllowClobber -Force -Verbose -Scope CurrentUser
 
 ForEach ($PolicyTemplateFiles in $PolicyTemplateFiles) {
     #Check if there is a file which needs to be removed
