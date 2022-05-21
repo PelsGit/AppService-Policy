@@ -40,7 +40,7 @@ ForEach ($PolicyTemplateFiles in $PolicyTemplateFiles) {
 $Policyset = get-AzPolicySetDefinition -Name 'app-service-policy-set' -ErrorVariable notPresent -ErrorAction SilentlyContinue
 
 if ($notPresent) {
-    $UserAssignedIdentity = Get-AzUserAssignedIdentity -ResourceGroupName $ResourceGroupName -Name 'UserAssignedIdentity1'
+    $UserAssignedIdentity = Get-AzUserAssignedIdentity -ResourceGroupName 'Pelstest-RG' -Name 'UserAssignedIdentity1'
     $newPolicySetDefinition = New-AzPolicySetDefinition `
         -Name 'app-service-policy-set' `
         -PolicyDefinition "PolicyTemplates\policyset\policyset.json"
